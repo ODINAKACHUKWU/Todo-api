@@ -1,6 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const _ =require('underscore');
+const _ = require('underscore');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -21,7 +21,9 @@ app.get('/todos', (req, res) => {
 // GET /todos/:id
 app.get('/todos/:id', (req, res) => {
     let todoId = parseInt(req.params.id, 10);
-    let matchedTodo = _.findWhere(todos, {id: todoId});
+    let matchedTodo = _.findWhere(todos, {
+        id: todoId
+    });
     // let matchedTodo;
 
     // todos.forEach((todo) => {
@@ -34,6 +36,22 @@ app.get('/todos/:id', (req, res) => {
         res.json(matchedTodo);
     } else {
         res.status(404).send();
+    }
+});
+
+app.delete('/todos/:id', (req, res) => {
+    let todoId = parseInt(req.params.id, 10);
+    let matchedTodo = _.findWhere(todos, {
+        id: todoId
+    });
+
+    if (!matchedTodo) {
+        res.status(404).json({
+            "error": "no todo found with that id"
+        });
+    } else {
+        todos = _.without(todos, matchedTodo);
+        res.json(matchedTodo);
     }
 });
 
@@ -51,7 +69,7 @@ app.post('/todos', (req, res) => {
 
     // Add id field to the object
     body.id = todoNextId++;
-    
+
     // Push body into array
     todos.push(body);
 
